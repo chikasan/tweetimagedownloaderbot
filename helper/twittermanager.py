@@ -4,8 +4,9 @@ from typing import Any, List
 import traceback
 
 from urllib.parse import urlparse
-from tweepy import OAuthHandler, API, Status
+from tweepy import OAuthHandler, API
 from tweepy.errors import TweepyException
+import tweepy
 
 from common.botexception import BotException
 
@@ -33,7 +34,7 @@ class TwitterManager:
             tweetid = self.get_tweetid(url)
             id_list = []
             id_list.append(tweetid)
-            tweets: List[Status] = self.twitter.lookup_statuses(id_list)
+            tweets: List[tweepy.Status] = self.twitter.lookup_statuses(id_list)
 
             mediaurl_list = []
             for tweet in tweets:
