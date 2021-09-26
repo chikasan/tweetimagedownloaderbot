@@ -21,8 +21,11 @@ Tweetに画像が含まれていたらローカルPCにダウンロードするB
    ```
 
 4. Discord Botと Twitter API のアクセストークン一式を取得する。
+   * Discord Botの権限
+     * Scopes : bot のみチェック
+     * Bot Permissions : View Channels と Send Messages をチェック
 5. 環境変数 として 下記を登録する。
-   * FUMIBOT_TOKEN : Discord Bot のトークン
+   * IMAGEBOT_TOKEN : Discord Bot のトークン
    * TWITTER_API_KEY : Twitter API Key 
    * TWITTER_API_SECRET : Twitter API SECRET 
    * TWITTER_ACCESS_TOKEN : Twitter アクセストークン 

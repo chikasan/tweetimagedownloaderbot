@@ -66,7 +66,7 @@ if __name__ == "__main__":
     intents = discord.Intents.default()
     client = TweetImageDownloaderBot(logger, intents)
 
-    TOKEN = os.environ["FUMIBOT_TOKEN"]
+    TOKEN = os.environ["IMAGEBOT_TOKEN"]
 
     try:
         client.loop.run_until_complete(client.start(TOKEN))
