@@ -9,6 +9,12 @@ Tweetに画像が含まれていたらローカルPCにダウンロードするB
   * discord.py : 1.7.3
   * poetry : 1.1.5
   * git : 2.27.0
+* Raspberry Pi
+  * Raspbian GNU/Linux 10 (buster)
+  * Python : 3.9.5
+  * discord.py : 1.7.3
+  * poetry : 1.1.6
+  * git : 2.20.1
 
 ## 初期設定
 
