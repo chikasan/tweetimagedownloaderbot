@@ -1,0 +1,9 @@
+{
+    "python.formatting.provider": "black",
+    "python.linting.mypyEnabled": true,
+    "python.linting.flake8Args": [
+        "--max-line-length",
+        "88",
+        "--ignore=D100,D104,E203,W503"
+      ]
+}
