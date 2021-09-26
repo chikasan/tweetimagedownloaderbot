@@ -4,9 +4,8 @@ from typing import Any, List
 import traceback
 
 from urllib.parse import urlparse
-from tweepy import OAuthHandler, API
+from tweepy import OAuthHandler, API, Status
 from tweepy.errors import TweepyException
-import tweepy
 
 from common.botexception import BotException
 
@@ -19,46 +18,22 @@ class TwitterManager:
         self.logger = getLogger("TweetDownloaderLog.TwitterManager")
 
         auth: Any = OAuthHandler(
-            consumer_key=os.environ["FUMIBOT_API_KEY"],
-            consumer_secret=os.environ["FUMIBOT_API_SECRET"],
+            consumer_key=os.environ["TWITTER_API_KEY"],
+            consumer_secret=os.environ["TWITTER_API_SECRET"],
         )
 
         auth.set_access_token(
-            key=os.environ["FUMIBOT_ACCESS_TOKEN"],
-            secret=os.environ["FUMIBOT_ACCESS_TOKEN_SECRET"],
+            key=os.environ["TWITTER_ACCESS_TOKEN"],
+            secret=os.environ["TWITTER_ACCESS_TOKEN_SECRET"],
         )
-        self.twitter: tweepy.API = API(auth)
-
-    def tweet(self, message: str):
-        """ツイートする.
-
-        Args:
-            message (str): ツイートするメッセージ(140文字未チェック)
-        """
-        try:
-            self.twitter.update_status(message)
-        except TweepyException as e:
-            self.logger.info("Error: Tweet is Failed.")
-            raise e
-
-    def tweetMedia(self, message: str, url: str):
-        """ツイートする.
-
-        Args:
-            message (str): ツイートするメッセージ(140文字未チェック)
-        """
-        try:
-            self.twitter.update_with_media(url, message)
-        except TweepyException as e:
-            self.logger.info("Error: TweetMedia is Failed.")
-            raise e
+        self.twitter: API = API(auth)
 
     def get_image_urls(self, url: str):
         try:
             tweetid = self.get_tweetid(url)
             id_list = []
             id_list.append(tweetid)
-            tweets: List[tweepy.Status] = self.twitter.lookup_statuses(id_list)
+            tweets: List[Status] = self.twitter.lookup_statuses(id_list)
 
             mediaurl_list = []
             for tweet in tweets:
