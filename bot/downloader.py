@@ -1,10 +1,12 @@
 import os
 from logging import getLogger
-import urllib.request
+import asyncio
 from pathlib import Path
 
 import discord
 from discord.ext import commands
+import aiohttp
+
 from helper.twittermanager import TwitterManager
 from common.botexception import BotException
 
@@ -35,6 +37,30 @@ class Downloader(commands.Cog):
 
         self.logger.info("Downloader初期化完了")
 
+    async def download(self, url: str) -> None:
+        """ファイルダウンロード.
+
+        Args:
+            url (str): ダウンロードするファイルのURL
+        """
+        # 数GB以上のファイルであれば値を小さく取る
+        chunk_size = 10  # 2
+
+        self.logger.info(f"Download Start. {url}")
+
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, timeout=600) as resp:
+                filename = os.path.basename(url)
+                save_path = self.SAVE_DIRECTRY / filename
+                with open(save_path, "wb") as fd:
+                    while True:
+                        chunk = await resp.content.read(chunk_size)
+                        if not chunk:
+                            break
+                        fd.write(chunk)
+
+        self.logger.info(f"Download finish. {url}")
+
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message) -> None:
         """メッセージ書き込みイベントハンドラ
@@ -57,13 +83,8 @@ class Downloader(commands.Cog):
                 self.logger.info(f"No Image. {message.content}")
                 return
 
-            for url in imageurls:
-                self.logger.info(f"Download Start. {url}")
-                filename = os.path.basename(url)
-
-                # 同じファイルがダウンロード先にあっても確認せず上書きダウンロードする。
-                urllib.request.urlretrieve(url, self.SAVE_DIRECTRY / filename)
-                self.logger.info(f"Download finish. {url}")
+            promises = [self.download(url) for url in imageurls]
+            await asyncio.gather(*promises)
 
             await message.channel.send(f"{len(imageurls)} 枚の画像をダウンロードしました。")
         except BotException as e:
