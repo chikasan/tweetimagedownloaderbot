@@ -16,7 +16,7 @@ class Downloader(commands.Cog):
         commands (commands.Cog): 継承元
     """
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: commands.Bot) -> None:
         """初期化.
 
         Args:
@@ -36,7 +36,13 @@ class Downloader(commands.Cog):
         self.logger.info("Downloader初期化完了")
 
     @commands.Cog.listener()
-    async def on_message(self, message: discord.Message):
+    async def on_message(self, message: discord.Message) -> None:
+        """メッセージ書き込みイベントハンドラ
+
+        Args:
+            message (discord.Message): メッセージオブジェクト
+        """
+
         if message.author.bot:
             return
 
