@@ -2,6 +2,7 @@ import os
 from logging import getLogger
 import asyncio
 from pathlib import Path
+from typing import Any
 
 import discord
 from discord.ext import commands
@@ -61,6 +62,19 @@ class Downloader(commands.Cog):
 
         self.logger.info(f"Download finish. {url}")
 
+    async def send_message(self, channel: Any, message: Any):
+        """メッセージ書き込み
+
+        Args:
+            channel (Any): 書き込みチャンネル
+            message (Any): 書き込みメッセージ
+        """
+        try:
+            await channel.send(message)
+        except discord.errors.Forbidden:
+            self.logger.error("書き込み権限がありません。")
+        pass
+
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message) -> None:
         """メッセージ書き込みイベントハンドラ
@@ -86,10 +100,12 @@ class Downloader(commands.Cog):
             promises = [self.download(url) for url in imageurls]
             await asyncio.gather(*promises)
 
-            await message.channel.send(f"{len(imageurls)} 枚の画像をダウンロードしました。")
+            await self.send_message(
+                message.channel, f"{len(imageurls)} 枚の画像をダウンロードしました。"
+            )
         except BotException as e:
             self.logger.error(f"Download Failed. {message.content}")
-            await message.channel.send(e)
+            await self.send_message(message.channel, e)
 
 
 def setup(bot: commands.Bot):
